@@ -401,8 +401,6 @@ module Network.AWS.CodePipeline
     , ActionRevision
     , actionRevision
     , aRevisionId
-    , aRevisionChangeId
-    , aCreated
 
     -- ** ActionState
     , ActionState

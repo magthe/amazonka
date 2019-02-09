@@ -476,8 +476,6 @@ instance NFData ActionExecution where
 -- /See:/ 'actionRevision' smart constructor.
 data ActionRevision = ActionRevision'
   { _aRevisionId       :: !Text
-  , _aRevisionChangeId :: !Text
-  , _aCreated          :: !POSIX
   } deriving (Eq, Read, Show, Data, Typeable, Generic)
 
 
@@ -492,14 +490,10 @@ data ActionRevision = ActionRevision'
 -- * 'aCreated' - The date and time when the most recent version of the action was created, in timestamp format.
 actionRevision
     :: Text -- ^ 'aRevisionId'
-    -> Text -- ^ 'aRevisionChangeId'
-    -> UTCTime -- ^ 'aCreated'
     -> ActionRevision
-actionRevision pRevisionId_ pRevisionChangeId_ pCreated_ =
+actionRevision pRevisionId_ =
   ActionRevision'
     { _aRevisionId = pRevisionId_
-    , _aRevisionChangeId = pRevisionChangeId_
-    , _aCreated = _Time # pCreated_
     }
 
 
@@ -507,21 +501,11 @@ actionRevision pRevisionId_ pRevisionChangeId_ pCreated_ =
 aRevisionId :: Lens' ActionRevision Text
 aRevisionId = lens _aRevisionId (\ s a -> s{_aRevisionId = a})
 
--- | The unique identifier of the change that set the state to this revision, for example a deployment ID or timestamp.
-aRevisionChangeId :: Lens' ActionRevision Text
-aRevisionChangeId = lens _aRevisionChangeId (\ s a -> s{_aRevisionChangeId = a})
-
--- | The date and time when the most recent version of the action was created, in timestamp format.
-aCreated :: Lens' ActionRevision UTCTime
-aCreated = lens _aCreated (\ s a -> s{_aCreated = a}) . _Time
-
 instance FromJSON ActionRevision where
         parseJSON
           = withObject "ActionRevision"
               (\ x ->
-                 ActionRevision' <$>
-                   (x .: "revisionId") <*> (x .: "revisionChangeId") <*>
-                     (x .: "created"))
+                 ActionRevision' <$> (x .: "revisionId"))
 
 instance Hashable ActionRevision where
 
@@ -531,9 +515,7 @@ instance ToJSON ActionRevision where
         toJSON ActionRevision'{..}
           = object
               (catMaybes
-                 [Just ("revisionId" .= _aRevisionId),
-                  Just ("revisionChangeId" .= _aRevisionChangeId),
-                  Just ("created" .= _aCreated)])
+                 [Just ("revisionId" .= _aRevisionId)])
 
 -- | Represents information about the state of an action.
 --
